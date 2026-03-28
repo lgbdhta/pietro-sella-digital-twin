@@ -1,0 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Playfair Display", serif;
+
+  /* Banca Sella Design Tokens */
+  --color-primary: #004a99;
+  --color-primary-hover: #003366;
+  --color-primary-soft: #f0f7ff;
+  --color-accent: #f39200; /* Sella Orange */
+  --color-accent-soft: #fff9f0;
+  --color-sella-green: #009639;
+  --color-sella-green-soft: #e6f7ec;
+
+  --color-page-bg: #ffffff;
+  --color-section-bg: #ffffff;
+  --color-card-bg: #ffffff;
+  --color-card-alt: #fcfdfe;
+
+  --color-border-base: #f1f5f9;
+  --color-border-strong: #e2e8f0;
+
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #334155;
+  --color-text-muted: #64748b;
+  --color-text-on-primary: #ffffff;
+
+  --color-success: #0F9D58;
+  --color-success-soft: #EAF7F0;
+  --color-error: #C62828;
+  --color-error-soft: #FDECEC;
+  --color-warning: #C58A00;
+  --color-warning-soft: #FFF7E1;
+
+  --color-focus-ring: rgba(10, 57, 211, 0.22);
+}
+
+body {
+  @apply bg-page-bg text-text-primary antialiased font-sans;
+}
+
+.markdown-body p {
+  @apply mb-4 leading-relaxed;
+}
+
+.markdown-body ul {
+  @apply list-disc pl-5 mb-4;
+}
+
+.markdown-body li {
+  @apply mb-1;
+}

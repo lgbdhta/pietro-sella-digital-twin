@@ -1,0 +1,5 @@
+{
+  "name": "Pietro Sella Digital Twin",
+  "description": "An executive-level conversational agent reflecting the leadership philosophy and public thinking of Pietro Sella, CEO of Gruppo Sella.",
+  "requestFramePermissions": ["camera", "microphone"]
+}
