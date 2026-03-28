@@ -6,7 +6,9 @@
   directory = "netlify/functions"
   included_files = [
     "dist-server/**",
-    "sql-wasm.wasm"
+    "sql-wasm.wasm",
+    "node_modules/@google/genai/**",
+    "node_modules/sql.js/**"
   ]
 
 [[redirects]]
