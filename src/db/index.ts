@@ -62,7 +62,7 @@ async function initializeDb(): Promise<void> {
   const SQL = await initSqlJs({
     locateFile: (file: string) => {
       if (file === 'sql-wasm.wasm') {
-        return path.join(process.cwd(), 'node_modules/sql.js/dist/sql-wasm.wasm');
+        return path.join(process.cwd(), 'sql-wasm.wasm');
       }
       return file;
     }
@@ -71,7 +71,6 @@ async function initializeDb(): Promise<void> {
   const sqlDb = new SQL.Database();
   dbInstance = new BetterSqlite3Compat(sqlDb);
 
-  // Initialize tables
   dbInstance.exec(`
     CREATE TABLE IF NOT EXISTS twins (
       id TEXT PRIMARY KEY,
