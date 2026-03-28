@@ -19,8 +19,6 @@ export class RAGPipeline {
   }
 
   async processChat(query: string, twinId: string, systemInstruction: string, history: any[] = []) {
-    const database = await db.getDb();
-
     // 1. Intent classification (simplified)
     const needsKnowledge = query.length > 15; // Simple heuristic
 
@@ -34,7 +32,7 @@ export class RAGPipeline {
 
     // 3. Log retrieval
     const logId = uuidv4();
-    database.prepare(`
+    db.prepare(`
       INSERT INTO retrieval_logs (id, query_text, selected_chunk_ids_json, scores_json)
       VALUES (?, ?, ?, ?)
     `).run(

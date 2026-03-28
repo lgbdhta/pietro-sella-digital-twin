@@ -11,7 +11,6 @@ export interface RetrievalResult {
 
 export class RetrievalService {
   private embeddingProvider: EmbeddingProvider;
-
   constructor(embeddingProvider: EmbeddingProvider) {
     this.embeddingProvider = embeddingProvider;
   }
@@ -20,22 +19,19 @@ export class RetrievalService {
     let dotProduct = 0;
     let normA = 0;
     let normB = 0;
-
     for (let i = 0; i < vecA.length; i++) {
       dotProduct += vecA[i] * vecB[i];
       normA += vecA[i] * vecA[i];
       normB += vecB[i] * vecB[i];
     }
-
     return dotProduct / (Math.sqrt(normA) * Math.sqrt(normB));
   }
 
   async retrieve(query: string, twinId: string, limit: number = 5): Promise<RetrievalResult[]> {
     const queryVector = await this.embeddingProvider.embed(query);
-    const database = await db.getDb();
-
+    
     // Fallback: Similarity search in JS since we don't have pgvector
-    const chunks = database.prepare(`
+    const chunks = db.prepare(`
       SELECT kc.id, kc.chunk_text, kc.embedding_vector, kc.trust_level, ks.title as source_title
       FROM knowledge_chunks kc
       JOIN knowledge_sources ks ON kc.source_id = ks.id
@@ -45,7 +41,6 @@ export class RetrievalService {
     const results = chunks.map(chunk => {
       const chunkVector = JSON.parse(chunk.embedding_vector);
       const similarity = this.cosineSimilarity(queryVector, chunkVector);
-
       return {
         chunk_id: chunk.id,
         text: chunk.chunk_text,
