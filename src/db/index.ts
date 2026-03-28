@@ -1,4 +1,5 @@
 import initSqlJs from 'sql.js';
+import path from 'path';
 
 let dbInstance: any = null;
 let initPromise: Promise<void> | null = null;
@@ -57,9 +58,17 @@ class BetterSqlite3Compat {
 
 async function initializeDb(): Promise<void> {
   if (dbInstance) return;
-  const SQL = await initSqlJs();
-  const sqlDb = new SQL.Database();
 
+  const SQL = await initSqlJs({
+    locateFile: (file: string) => {
+      if (file === 'sql-wasm.wasm') {
+        return path.join(process.cwd(), 'node_modules/sql.js/dist/sql-wasm.wasm');
+      }
+      return file;
+    }
+  });
+
+  const sqlDb = new SQL.Database();
   dbInstance = new BetterSqlite3Compat(sqlDb);
 
   // Initialize tables
@@ -137,5 +146,4 @@ export async function getDb() {
   return dbInstance;
 }
 
-// Default export for backward compat — callers must now use getDb()
 export default { getDb };
