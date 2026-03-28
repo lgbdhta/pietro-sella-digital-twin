@@ -35,7 +35,8 @@ export async function handler(event) {
     return { statusCode: 204, headers: corsHeaders, body: "" };
   }
 
-  const db = (await import(path.join(baseDir, "dist-server/db/index.js"))).default;
+  const dbModule = (await import(path.join(baseDir, "dist-server/db/index.js"))).default;
+  const db = await dbModule.getDb();
   const { ragPipeline } = await import(path.join(baseDir, "dist-server/services/rag_pipeline.js"));
   const { tavusService } = await import(path.join(baseDir, "dist-server/services/tavus_service.js"));
   const { chatOrchestrator } = await import(path.join(baseDir, "dist-server/services/chat_orchestrator.js"));
