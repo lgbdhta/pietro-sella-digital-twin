@@ -1,11 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
+import path from "path";
 
-import db from "../../dist/db/index.js";
-import { ragPipeline } from "../../dist/services/rag_pipeline.js";
-import { tavusService } from "../../dist/services/tavus_service.js";
-import { chatOrchestrator } from "../../dist/services/chat_orchestrator.js";
-
-console.log("NETLIFY FUNCTION STARTED");
+const baseDir = process.cwd();
 
 const corsHeaders = {
   "Content-Type": "application/json",
@@ -39,15 +35,20 @@ export async function handler(event) {
     return { statusCode: 204, headers: corsHeaders, body: "" };
   }
 
-  const path = normalizePath(event);
+  const db = (await import(path.join(baseDir, "dist-server/db/index.js"))).default;
+  const { ragPipeline } = await import(path.join(baseDir, "dist-server/services/rag_pipeline.js"));
+  const { tavusService } = await import(path.join(baseDir, "dist-server/services/tavus_service.js"));
+  const { chatOrchestrator } = await import(path.join(baseDir, "dist-server/services/chat_orchestrator.js"));
+
+  const routePath = normalizePath(event);
   const method = event.httpMethod;
 
   try {
-    if (method === "GET" && path === "/api/health") {
+    if (method === "GET" && routePath === "/api/health") {
       return json(200, { status: "ok", service: "api" });
     }
 
-    if (method === "GET" && path === "/api/health/rag") {
+    if (method === "GET" && routePath === "/api/health/rag") {
       const chunkCount = db
         .prepare("SELECT COUNT(*) as count FROM knowledge_chunks")
         .get();
@@ -58,13 +59,13 @@ export async function handler(event) {
       });
     }
 
-    if (method === "GET" && path === "/api/health/tavus") {
+    if (method === "GET" && routePath === "/api/health/tavus") {
       return json(200, {
         configured: tavusService.isConfigured(),
       });
     }
 
-    if (method === "POST" && path === "/api/chat") {
+    if (method === "POST" && routePath === "/api/chat") {
       const body = JSON.parse(event.body || "{}");
 
       try {
@@ -82,7 +83,7 @@ export async function handler(event) {
       }
     }
 
-    if (method === "POST" && path === "/api/avatar/session/start") {
+    if (method === "POST" && routePath === "/api/avatar/session/start") {
       try {
         const conversation = await tavusService.createConversation();
         return json(200, conversation);
@@ -92,7 +93,7 @@ export async function handler(event) {
       }
     }
 
-    if (method === "POST" && path === "/api/admin/knowledge") {
+    if (method === "POST" && routePath === "/api/admin/knowledge") {
       const body = JSON.parse(event.body || "{}");
 
       const id = uuidv4();
